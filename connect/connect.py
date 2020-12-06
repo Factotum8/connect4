@@ -103,16 +103,51 @@ class Game:
         """
         Check all columns and line
         """
+        # lines
         for line in self._game_field_state:
             if self._check_four_connect(line, marker):
                 return True
-
+        # columns
         for i in range(self._count_lines):
             col = self._single_column(i)
             if self._check_four_connect(col, marker):
                 return True
+        # diagonals
+        for diagonal in self.all_diagonals():
+            if self._check_four_connect(diagonal, marker):
+                return True
 
         return False
+
+    def side_diagonals(self, matrix, count_lines, count_columns):
+        """
+        Get all side diagonals from matrix = count_lines x count_columns
+        is longer than sequence_depth
+        """
+        diagonals = [
+            [matrix[sum_ - k][k]
+             for k in range(sum_ + 1) if (sum_ - k) < count_lines and k < count_columns]
+            for sum_ in range(count_lines + count_columns - 1)
+        ]
+
+        diagonals = [d for d in diagonals if self.sequence_depth <= len(d)]
+        return diagonals
+
+    def all_diagonals(self):
+        """
+        :return: all diagonals from matrix = count_lines x count_columns
+        is longer than sequence_depth
+        """
+        all_ = self.side_diagonals(self._game_field_state, self._count_lines, self._count_columns)
+
+        # matrix reversed for change diagonal
+        reverse_matrix = []
+        for line in self._game_field_state:
+            reverse_matrix.append(list(reversed(line)))
+
+        all_.extend(self.side_diagonals(reverse_matrix, self._count_lines, self._count_columns))
+
+        return all_
 
     @staticmethod
     def _check_four_connect(line, marker):

@@ -1,2 +1,2 @@
 # connect4
-The test task.
+Implementation of the game [connect4](https://connect4.gamesolver.org).

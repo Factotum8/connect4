@@ -141,20 +141,18 @@ if __name__ == '__main__':
 
     current_player = game.player_first
     print('Player 1 will be X. Player 2 will be O.')
-    while True:
+
+    while not game.check_winner(current_player):
         game.show_game_field()
 
         choice = game.player_choice()
         game.step(current_player, choice)
-
-        if game.check_winner(current_player):
-            print(f'The player {current_player} wins.')
-            break
 
         if not game.is_empty_cells_in_field():
             print('Nobody wins. The board is filled up.')
             break
 
         current_player = game.player_second if current_player == game.player_first else game.player_first
-
-    game.show_game_field()
+    else:
+        print(f'The player {current_player} wins.')
+        game.show_game_field()
